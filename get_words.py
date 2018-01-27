@@ -37,6 +37,24 @@ def get_poem_vocabulary(link):
                     word_list.append(word)
     return word_list
 
+#get poem text
+def get_poem_text(link):
+    text = ""
+    page = requests.get(link)
+    encoding = page.headers['content-type'].split('charset=')[1]
+    soup = BeautifulSoup(page.text, from_encoding="cp1252")
+    bolded = soup.find_all('b')
+    title = bolded[5].getText()
+    text += title
+    for p in soup.find_all('p'):
+        links = p.find_all('a')
+        font_tags = p.find_all('font')
+        if len(links) > 0 or len(font_tags) > 0:
+            continue
+        else:
+            text += " " + p.getText()
+    return text
+
 # clean up words from punctuation          
 def clean_up_word(word):
     accepted_characters = "абвгдежзийклмнопрстуфхцчшщъьюяѝ"
@@ -71,6 +89,13 @@ def get_all_poems_words(path):
     for link in links:
         word_list.extend(get_poem_vocabulary(link))
     return word_list
+
+def get_all_text(path):
+    text = ""
+    links = read_poem_links_from_file(path)
+    for link in links:
+        text += get_poem_text(link)
+    return text
     
 # create final frequency dictionary
 def get_complete_dictionary(path):
@@ -80,3 +105,5 @@ def get_complete_dictionary(path):
 
 
 # get_complete_dictionary("links/poetry_links.txt")
+# print(get_poem_text("https://liternet.bg/publish11/k_kadiiski/ezdach/gong.htm"))
+text = get_all_text("links/poetry_links.txt")
