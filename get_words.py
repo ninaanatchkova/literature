@@ -1,8 +1,18 @@
 import requests
 import lxml
+import os
 import operator
+import csv
 from bs4 import BeautifulSoup
 
+# get scraping links
+def read_poem_links_from_file(path):
+    poem_links = []
+    if os.path.exists(path):
+        poem_links = [line.strip() for line in open(path)]
+    return poem_links
+
+# get words from poem page
 def get_poem_vocabulary(link):
     word_list = []
     page = requests.get(link)
@@ -25,25 +35,48 @@ def get_poem_vocabulary(link):
                 word = clean_up_word(word)
                 if len(word) > 0:
                     word_list.append(word)
-    return(word_list)
+    return word_list
 
-            
+# clean up words from punctuation          
 def clean_up_word(word):
     accepted_characters = "абвгдежзийклмнопрстуфхцчшщъьюяѝ"
     for c in list(word):
         if c not in list(accepted_characters):
             word = word.replace(c, "")
-    return(word)
+    return word
 
-def create_dictionary(list):
+# create dictionary from word list
+def create_dictionary(word_list):
     word_count = {}
-    for word in list:
+    for word in word_list:
         if word in word_count:
             word_count[word] += 1
         else:
             word_count[word] = 1
-    for key, value in sorted(word_count.items(), key=operator.itemgetter(1), reverse=True):
-        print(key, value)
+    with open("datasets/poems_set.csv", "w", newline="", encoding= "utf-8") as csvfile:
+        fieldnames = ["word", "frequency"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for key, value in sorted(word_count.items(), key=operator.itemgetter(1), reverse=True):
+            writer.writerow({
+                "word" : key,
+                "frequency" : value
+            })
+        csvfile.close()
 
-word_list = get_poem_vocabulary("https://liternet.bg/publish11/k_kadiiski/ezdach/treva1.htm")
-create_dictionary(word_list)
+# amass a wordlist from all poems
+def get_all_poems_words(path):
+    word_list = []
+    links = read_poem_links_from_file(path)
+    for link in links:
+        word_list.extend(get_poem_vocabulary(link))
+    return word_list
+    
+# create final frequency dictionary
+def get_complete_dictionary(path):
+    word_list = get_all_poems_words(path)
+    print(word_list)
+    create_dictionary(word_list)
+
+
+# get_complete_dictionary("links/poetry_links.txt")
