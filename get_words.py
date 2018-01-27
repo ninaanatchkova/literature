@@ -1,5 +1,6 @@
 import requests
 import lxml
+import io
 import os
 import operator
 import csv
@@ -91,11 +92,11 @@ def get_all_poems_words(path):
     return word_list
 
 def get_all_text(path):
-    text = ""
     links = read_poem_links_from_file(path)
-    for link in links:
-        text += get_poem_text(link)
-    return text
+    with io.open("datasets/poems_text.txt", 'w', encoding='utf8') as f:
+        for link in links:
+            f.write(get_poem_text(link))
+    f.close()
     
 # create final frequency dictionary
 def get_complete_dictionary(path):
@@ -106,4 +107,4 @@ def get_complete_dictionary(path):
 
 # get_complete_dictionary("links/poetry_links.txt")
 # print(get_poem_text("https://liternet.bg/publish11/k_kadiiski/ezdach/gong.htm"))
-text = get_all_text("links/poetry_links.txt")
+get_all_text("links/poetry_links.txt")
