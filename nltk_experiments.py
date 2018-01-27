@@ -66,6 +66,6 @@ def plot_frequency_distribution(text):
     freq_dist = FreqDist(text)
     freq_dist.plot(50, cumulative=True)
 
-# text = tokenize_text("datasets/poems_text.txt")
-# plot_dispersions_for_text(text, "datasets/poems_set.csv")
+# text = tokenize_text("datasets/poem_text.txt")
+# plot_dispersions_for_text(text, "datasets/poem_set.csv")
 # plot_frequency_distribution(text)
