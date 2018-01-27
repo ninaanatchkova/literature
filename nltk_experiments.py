@@ -49,7 +49,6 @@ def get_top_words_from_bg_freq_dict():
         k_v = row_text[0].split("\t")
         k = k_v[0]
         v = k_v[1]
-        print(row_text)
         freq_dictionary[k] = v
     word_list = []
     for key in freq_dictionary.keys():
@@ -65,5 +64,8 @@ def plot_dispersions_for_text(text, path):
 
 def plot_frequency_distribution(text):
     freq_dist = FreqDist(text)
-    print(freq_dist.most_common(50))
     freq_dist.plot(50, cumulative=True)
+
+# text = tokenize_text("datasets/poems_text.txt")
+# plot_dispersions_for_text(text, "datasets/poems_set.csv")
+# plot_frequency_distribution(text)
