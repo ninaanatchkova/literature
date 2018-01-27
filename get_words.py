@@ -107,4 +107,4 @@ def get_complete_dictionary(path):
 
 # get_complete_dictionary("links/poetry_links.txt")
 # print(get_poem_text("https://liternet.bg/publish11/k_kadiiski/ezdach/gong.htm"))
-get_all_text("links/poetry_links.txt")
+# get_all_text("links/poetry_links.txt")
