@@ -18,8 +18,17 @@ def clean_up_word(word):
             word = word.replace(c, "")
     return word
 
-
 def tokenize_text(path):
+    f = io.open(path, mode="r", encoding="utf-8")
+    raw = f.read()
+    tokens = nltk.word_tokenize(raw)
+    words = []
+    for token in tokens:
+        words.append(token)
+    text = nltk.Text(words)
+    return text
+
+def clean_text(path):
     f = io.open(path, mode="r", encoding="utf-8")
     raw = f.read()
     tokens = nltk.word_tokenize(raw)
@@ -67,51 +76,16 @@ def plot_dispersions_for_text(text, path):
 def plot_frequency_distribution(text):
     freq_dist = FreqDist(text)
     freq_dist.plot(50, cumulative=True)
+    print(freq_dist.most_common(50))
+    print(freq_dist["уста"])
 
 
-# A mess
-''' def bg_fiction_word_frequency():
-    reader = csv.reader(open('datasets/D-Fiction0001_byFreq.csv', 'r', encoding= "utf-8"))
-    freq_dictionary = {}
-    word_rank = []
-    word_occurence = []
-    word_list = []
-    shortened_reader = itertools.islice(reader, 20000)
-    for rows in shortened_reader:
-        for i, row in enumerate(shortened_reader):
-            if i % 1000 == 0:
-                row_text = row
-                k_v = row_text[0].split("\t")
-                print(k_v)
-                k = k_v[0]
-                if len(k_v) > 1:
-                    v = k_v[1]
-                else:
-                    v = 0
-                freq_dictionary[k] = v
-                word_rank.append(i)
-                word_occurence.append(v)
-                word_list.append(k)
-                print(i)
-            word_list.reverse()
-            word_rank.reverse()
-            word_occurence.reverse()
-            for key in freq_dictionary.keys():
-                word_list.append(key)
 
-    plt.title("Word Frequencies in BNC / Fiction")
-    plt.ylabel("Total Number of Occurrences")
-    plt.xlabel("Word ranks")
-    plt.loglog(word_rank, word_occurence, basex=10)
-    word_xticks = np.array(word_list)
-    freq_yticks = np.array(word_occurence)
-    frequency = 1000
-    plt.xticks(word_rank[::frequency], word_xticks[::frequency])
-    plt.yticks(word_occurence[::frequency], freq_yticks[::frequency])
-    plt.show() '''
+############################# Execute functions ############################
 
-bg_fiction_word_frequency()
-
-# text = tokenize_text("datasets/poem_text.txt")
+text = tokenize_text("texts/kadiiski.txt")
+print(text)
+text2 = clean_text("texts/kadiiski.txt")
+print(text2)
 # plot_dispersions_for_text(text, "datasets/poem_set.csv")
 # plot_frequency_distribution(text)
